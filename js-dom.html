@@ -1,0 +1,148 @@
+<html>
+
+<head>
+<script>
+/*
+Note:
+DOM 
+	D:document  文档
+	O:Object    对象
+		JavaScript语言里对象可以分为三种类型：
+		用户定义的对象(user-defined object) 有程序员自己创建的对象
+		内建对象(native object) 内建在JavaScript语言里的对象，如Array、Math、Date等
+		宿主对象(host object) 由浏览器提供的对象，如 window对象
+	M:模型
+
+	节点：元素节点、文本节点和属性节点
+
+
+CSS（层叠样式表）告诉浏览器应该如何显示一份文档的内容
+
+如何引用CSS样式：
+	1>直接在html里写
+		<head>
+			<style type="text/css">
+				body {
+					background-color: red;
+				}
+				p {
+					margin-left: 20px
+				}
+			</style>
+		<head>
+
+	2>引入CSS文件
+		<head>
+		<link rel="stylesheet" type="text/css" href="mystyle.css">
+		</head>
+
+
+元素样式：
+	body{
+		color:yellow;
+		background-color: black;
+	}
+	元素样式还有继承的功能，类似DOM，CSS也罢文档的内容视为一棵节点树，节点树上的各个元素将继承其父元素的样式属性，比如上面的我们为body元素定义了一些字体和背景颜色，这些颜色不仅作用于那些直接包含在<body>标签里的内容， 还将作用于嵌套在body元素内部的所有元素。
+
+class样式（给带有class属性的元素应用样式）
+	<p class"special">element p has special class</p>
+	<h2 class="special">element h2 has special class</p>
+	如下面的样式，就会对上面的两个标签起作用，内容都变成了斜体。
+	.special{
+		font-style: italic;
+	}
+
+	如果只想给h2标签设置斜体，p标签不受影响，可以这样设置样式：
+	h2.special{
+		font-style: italic;
+	}
+	如果即存在.special又存在h2.special，.special样式还是会影响到所有h2标签。
+
+
+id样式 
+
+
+
+
+DOM提供的五个方法：
+getElementById();            节点上设置id属性，id表示独一无二的标志，如果有两个相同的id，chrome上只会返回第一个。
+getElementsByTagName();
+getElementByClassName();
+getAttribute();
+setAttribute();
+
+
+
+*/
+
+function getElementBySameId(){
+	var pElements = document.getElementById("p1");
+	alert(pElements.innerHTML);
+}
+
+function test(){
+	var content = document.getElementById("content");
+	var title = content.getAttribute("flag");
+	alert(title);
+	content.setAttribute("flag","this is set title");
+	alert(content.getAttribute("flag"));
+
+}
+
+function show(){
+	alert("alert");
+}
+
+function getChildNodes(){
+	var element = document.getElementsByTagName("body")[0];
+	alert(element.childNodes.length);
+}
+
+</script>
+
+
+<style type="text/css">
+
+body{
+	color: red;
+	background-color: white;
+}
+
+.special{
+	font-style: italic;
+}
+
+h2.special{
+	font-size: 20px;
+	/*font-style: normal;*/
+}
+
+</style>
+
+</head>
+<body id="content">
+
+<p id="p1">this is content</p>
+
+<p id="p1" class="special">element p has special class</p>
+
+<h2 class="special">element h2 has special class</p>
+
+<a href="http://www.baidu.com" onclick="show();return true;">link click test</a>
+
+<br/>
+
+<button onclick="test()">Alert Text</button> 
+
+<br/>
+
+<button onclick="getElementBySameId()">getElementBySameId chrome will return first one</button> 
+
+<br/>
+
+<button onclick="getChildNodes()">childNodes</button> 
+
+</body>
+
+
+</html>

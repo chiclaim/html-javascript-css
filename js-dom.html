@@ -5,7 +5,7 @@
 /*
 Note:
 DOM 
-	D:document  文档
+	D:document  文档  一份文档就是一棵节点树，每个节点都是一个对象
 	O:Object    对象
 		JavaScript语言里对象可以分为三种类型：
 		用户定义的对象(user-defined object) 有程序员自己创建的对象
@@ -13,7 +13,11 @@ DOM
 		宿主对象(host object) 由浏览器提供的对象，如 window对象
 	M:模型
 
-	节点：元素节点、文本节点和属性节点
+	节点：元素[标签]节点、文本节点和属性节点
+		标签节点就是html里的标签，如L<body>、<p>之类的标签。标签的名字就是元素的名字
+		文本节点就是文本，如<p>标签包含"this is content" 文本，那么这个文本就是文本节点
+		属性节点被放在起始标签里，如<p title="title">xxxx</p>，那么title="title"就是属性节点
+
 
 
 CSS（层叠样式表）告诉浏览器应该如何显示一份文档的内容
@@ -44,7 +48,7 @@ CSS（层叠样式表）告诉浏览器应该如何显示一份文档的内容
 	}
 	元素样式还有继承的功能，类似DOM，CSS也罢文档的内容视为一棵节点树，节点树上的各个元素将继承其父元素的样式属性，比如上面的我们为body元素定义了一些字体和背景颜色，这些颜色不仅作用于那些直接包含在<body>标签里的内容， 还将作用于嵌套在body元素内部的所有元素。
 
-class样式（给带有class属性的元素应用样式）
+class样式（给带有class属性的元素设置样式）
 	<p class"special">element p has special class</p>
 	<h2 class="special">element h2 has special class</p>
 	如下面的样式，就会对上面的两个标签起作用，内容都变成了斜体。
@@ -59,17 +63,112 @@ class样式（给带有class属性的元素应用样式）
 	如果即存在.special又存在h2.special，.special样式还是会影响到所有h2标签。
 
 
-id样式 
+id样式 （给具有唯一id标识的元素设置样式）
 
+<ul id="purchases">
+	<li>支付宝</li>
+	<li>微信</li>
+	<li>信用卡</li>
+</ul>
+
+通过如下方式设置【#】：
+#purchases{
+	border: 1px solid white;
+	background-color:  #333;
+	color: #ccc;
+	padding: 2em;
+}
+如果你想给id为purchases的节点的子节点设置单独设置样式，可以这样：
+#purchases li{
+	font-weight: bold;
+}
 
 
 
 DOM提供的五个方法：
-getElementById();            节点上设置id属性，id表示独一无二的标志，如果有两个相同的id，chrome上只会返回第一个。
-getElementsByTagName();
-getElementByClassName();
-getAttribute();
-setAttribute();
+1.getElementById(id);            
+	这个方法返回一个对象，这个对象对应着document对象里一个独一无二的元素。【实际上，document中的每个元素都是一个对象。利用DOM提供的方法能得到任何一个对象】
+	节点上设置id属性，id应该设置为独一无二的，但是你非得在html节点上加上两个相同的id，chrome上只会返回第一个。
+	一般说来，用不着为文档里的每个元素都定义一个独一无二的对象。DOM提供了另一个方法来获取那些没有id属性的对象。
+
+2.getElementsByTagName(tag);
+	getElementsByTagName方法会一个对象数组，每个对象分别对应着文档里有着给定标签的一个元素。参数tag就是文档的标签，比如body、ul、ui等标签。调用可以参考demo里的getChildNodes()方法。
+	getElementsByTagName还可以传递通配符如“*” ,它会返回文档里的所有元素节点，document.getElementsByTagName("*")。
+	getElementsByTagName还可以被其他元素节点调用，比如
+		var payWays = document.getElementById("purchases");
+		var items = payWays.getElementsByTagName("*");
+		因为在例子中id为purchases元素节点是ul，那么payWays.getElementsByTagName("*");返回的是ul里面有多少个ui节点。
+
+3.getElementsByClassName(class);
+	HTML5 DOM中新增的一个方法。这个方法能够通过class属性来访问元素。该方法返回的也是数组。
+	如果你想输入多个className可以用空格隔开。如：document.getElementsByClassName("name1 name2")
+	和getElementsByTagName(tag)一样，getElementsByClassName也可以被其他元素调用,但是不支持*通配符：
+		var payWays = document.getElementById("purchases");
+		var items = payWays.getElementsByClassName("sale");
+	因为getElementsByClassName方法HTML5才出来的，老点的浏览器可能不支持，下面方法兼容老版本：
+		function getElementsByClassName(node, classname){
+			if(node.getElementsByClassName{//如果支持，使用新方法
+				return node.getElementsByClassName(classname);
+			} else{
+				var results = new Array();
+				var es = node.getElementsByTagName("*");
+				for(var i=0;i<es.length;i++){
+					if(es[i].className.index(classname)!=-1){
+						results[results.length] = es[i];
+					}
+				}
+			}
+		}
+
+4.getAttribute();
+  setAttribute();
+	这个两个方法都是用来获取和设置节点上的属性。不属于document对象。
+
+5.childNodes获取节点下的所有类型的子元素，该属性返回已给数组
+	文档里的节点不止元素节点、文本节点，属性节点三个类型的节点。文档里几乎每一样东西都是一个节点。甚至连空格和换行都会被解释为节点，而他们也会全部包含在childNodes属性返回的数组当中。
+	上面我们通过getElementsByTagName("*")也可以获取某个节点下子元素, 注意getElementsByTagName("*")返回的不仅仅是直接子节点，如果子节点包含了节点，也会计算在内的。
+	虽然childNodes返回所有类型的节点，我们可以通过nodeType获取节点的类型，但是该属性只返回整形。
+
+
+6.nodeType 节点的类型	
+	元素节点的nodeType属性值是1.
+	属性节点的nodeType属性值是2.
+	文本节点的nodeType属性值是3.
+	也就这是三个节点有使用价值。
+
+7.nodeValue 属性返回文本节点的值。
+	比如要获取<p id="xxx">我是标签p里的值</p> 里面的文本的值，其实这里包含了两个节点，一个元素节点p和里面的文本节点，可以通过下面方式获取里面的文本：
+	document.getElementById("xxx").childNodes[0].nodeValue; //document.getElementById("xxx").firstNode.nodeValue;
+	nodeValue除了可以获取文本节点的值，还可以修改文本节点的值，如：
+	p1.firstChild.nodeValue = "通过nodeValue设置新的值"
+
+8.firstChild 和 lastChild 获取节点数组中首尾节点
+	var e = document.getElementById("xxx");
+	e.firstChild 相当于 e.childNodes[0]
+	e.lastChild 相当于 e.childNodes[e.childNodes.length-1]
+
+
+最佳实践
+	JavaScript中的伪协议,如：
+	<a href="javascript:openWindow()">openWindow</a>
+	内嵌的事件处理函数
+	<a href="#" onclick="openWindow();return false">openWindow</a>
+	很遗憾这两种方式都很糟糕，原因有两点：
+	1>因为他们都不能平稳退化，如果用户已经禁用了浏览器的JavaScript功能，这样的链接将毫无用处。
+	2>href属性值不是合法的链接，可能会影响搜索引擎上的排名
+	所以最好的方式就是href设置为合法的url，修改一下openwindow，把url作为参数传递进去而不是在方法里写死。
+	<a href="http://www.baidu.com" onclick="openwindow('http://www.baidu.com');return false">openWindow</a>
+	可以共用前面设置的url
+	<a href="http://www.baidu.com" onclick="openwindow(this.getAtrribute('href'));return false">openWindow</a>
+	看起来比较多，还可以简化下（this可以代表任何一种当前元素）：
+	<a href="http://www.baidu.com" onclick="openwindow(this.href);return false">openWindow</a>
+
+	JavaScript分离
+	
+
+
+
+
 
 
 
@@ -86,16 +185,52 @@ function test(){
 	alert(title);
 	content.setAttribute("flag","this is set title");
 	alert(content.getAttribute("flag"));
-
 }
 
 function show(){
-	alert("alert");
+	alert("Test alert");
 }
 
 function getChildNodes(){
-	var element = document.getElementsByTagName("body")[0];
-	alert(element.childNodes.length);
+	//获取body标签的所有子节点
+	//var element = document.getElementsByTagName("body")[0];
+	//alert(element.childNodes.length);
+
+	var payWays = document.getElementById("purchases");
+	//获取purchases的子节点
+	// var  items  = payWays.getElementsByTagName("*");
+	// alert("支付方式："+items.length+"个");//5个
+
+	alert("支付方式："+payWays.childNodes.length+"个");//7个
+	for(var i=0;i<payWays.childNodes.length;i++){
+		//alert(typeof payWays.childNodes[i]);
+		alert(payWays.childNodes[i].nodeType);
+	}
+
+}
+
+
+function testGetElementsByClassName(){
+	var es = document.getElementsByClassName("special");
+	for(var i=0;i<es.length;i++){
+		//typeof es[i]; 输出类型
+		alert(es[i].innerHTML);
+	}
+}
+
+function getChildValue(){
+	var p1 = document.getElementById("p1");
+	//alert(p1.childNodes[0].nodeValue);
+	alert(p1.firstChild.nodeValue);
+}
+
+function updateNodeValue () {
+	var p1 = document.getElementById("p1");
+	p1.firstChild.nodeValue = '新的文本值通过nodeValue设置的';
+}
+
+function openWindow(){
+	window.open("http://www.baidu.com","new window","width=300,height=600");
 }
 
 </script>
@@ -117,6 +252,16 @@ h2.special{
 	/*font-style: normal;*/
 }
 
+#purchases{
+	border: 1px solid red;
+	background-color:  #333;
+	color: white;
+	padding: 2em;
+}
+
+#purchases li{
+	font-weight: bold;
+}
 </style>
 
 </head>
@@ -126,11 +271,22 @@ h2.special{
 
 <p id="p1" class="special">element p has special class</p>
 
-<h2 class="special">element h2 has special class</p>
+<h2 class="special">element h2 has special class</h2>
 
 <a href="http://www.baidu.com" onclick="show();return true;">link click test</a>
 
 <br/>
+
+<ul id="purchases">
+	<div>
+		<div>
+		<li>支付宝</li>
+		</div>
+	</div>
+	<li>微信</li>
+	<li>信用卡</li>
+</ul>
+
 
 <button onclick="test()">Alert Text</button> 
 
@@ -141,6 +297,31 @@ h2.special{
 <br/>
 
 <button onclick="getChildNodes()">childNodes</button> 
+
+<br/>
+
+<button onclick="testGetElementsByClassName()">testGetElementsByClassName</button> 
+
+<br/>
+
+<button onclick="getChildValue()">getChildValue</button> 
+
+<br/>
+
+<button onclick="updateNodeValue()">updateNodeValue</button> 
+
+<br/>
+
+<button onclick="openWindow()">openWindow</button> 
+
+<br/>
+
+<a href="javascript:openWindow()">openWindow</a>
+
+<br/>
+
+<a href="#" onclick="openWindow();return false">openWindow</a>
+
 
 </body>
 

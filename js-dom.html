@@ -1,7 +1,10 @@
 <html>
 
 <head>
-<script>
+<!--
+<script type="text/javascript" src="myjs.js" />
+-->
+<script type="text/javascript">
 /*
 Note:
 DOM 
@@ -164,6 +167,102 @@ DOM提供的五个方法：
 	<a href="http://www.baidu.com" onclick="openwindow(this.href);return false">openWindow</a>
 
 	JavaScript分离
+		如何把JavaScript代码调用行为与HTML文档的结构和内容分离开，这样的话，网页就会健壮多。那么，能否使用下面的语句来实现点击事件(里面并没有onclick属性)：
+		<a href="http://www.baidu.com" class="popup">open window</a>
+		JavaScript语言不要求事件必须在HTML文档里处理，我们可以在外部JavaScript文件里把一个事件添加到HTML文档中的某个元素上，如下所示：
+			element.event = action...
+		如何获取element上面我们已经讲了很多操作方法比如：getElementById(id)、getElementsByTagName(tag)...
+		那么，如何实现上面的点击效果呢？
+		(1)获取html的a标签
+		(2)遍历a标签数组
+		(3)如果某个a标签的class属性等于popup，就表示需要给它设置处理点击事件的函数
+		var as = document.getElementsByTagName("a");
+		for(var i = 0; i < as.length; i++){
+			if(as[i].getAttribute("class") == 'popup'){
+				as[i].onclick = function(){
+					openwindow(this.getAttribute("href"));
+					return false;
+				}
+			}
+		}
+
+		测试的时候，发现并没有用。因为上面的js代码的第一行是：
+		var as = document.getElementsByTagName("a");
+		这行语句将在JavaScript文件被加载时立刻执行，如果引用外部js的代码<script>标签调用是在放在标签<head>里，它将在HTML文档之前加载到浏览器里；如果是</body>标签之前，就不能保证那个文件先结束加载(浏览器可能一次加载多个)。因为文档加载时文档可能不完整，所以模型也不完整。没有完整的DOM，getElementsByTagName函数就不能正常工作。
+		所以必须让这些代码在HTML文档全部加载到浏览器之后马上开始执行。还在，HTML文档全部加载完毕时将触发一个事件 window.onload，当触发onload事件时，document对象已经存在了。所以把外部js改成如下形式就可以了：
+		window.onload = preLinks;
+		function preLinks(){
+			var as = document.getElementsByTagName("a");
+			for(var i = 0; i < as.length; i++){
+				if(as[i].getAttribute("class") == 'popup'){
+					as[i].onclick = function(){
+						openwindow2(this.getAttribute("href"));
+						return false;
+					}
+				}
+			}
+		}
+		function openwindow2(url){
+			window.open(url,"openwindow","width=600,height=600");
+		}
+
+		这样我们就成功的把行为和结构分离了
+
+		问题又来了，如果浏览器没有启用JavaScript功能。这样的话可以确保那些“古老的”浏览器不会因为我们的脚本代码而出问题，这样做是为了让脚本有良好的向后兼容性。那些只支持一部分JavaScript功能但不支持DOM的浏览器认可访问我们的网页。
+		(我觉得，现在浏览器都非常新了，而且没有不支持DOM的吧。哈哈，但是还是记录下这个知识点。可能这本书比较老，这也体现了这本书作者的思维严谨性，值得学习)
+		判断某个js方法是否可用可以通过if(functionName)，如：
+		if(!document.getElementById(id)) return false
+
+		性能考虑：
+			(1)尽量减少DOM的操作，比如document.getElementById(id)，回去搜索整个DOM树。所以如果能够复用操作尽量复用，减少DOM操作。
+			(2)如果引入多个外部js文件，如果可以的话，把多个js合并到一个js文件，减少加载页面时发出请求的次数。
+			(3)压缩脚本，所谓压缩脚本，指的是吧脚本文件不要的字节，如空格和注释等统统删除，达到压缩文件的目的。很多工具都可以替你来做这件事。有的压缩工具甚至会重写你的部分代码，使用更短的变量名，从而减少整体的文件大小。压缩后的代码版本虽然不容易看懂，却能大幅减少文件的大小。所以要保存两个版本，一个一个是工作副本(可以修改代码并添加注释)；另一个是精简副本，用于存放站点。通常为了与非精简版本区分开，最好在精简副本的文件名中加上min字样。如：<script src="scriptName.min.js">
+			下面推荐几个代表性的压缩工具：
+				1>JSMin  地址 http://crockford.com/javascript/jsmin
+				2>雅虎的YUI Compressor 地址 https://developer.yahoo.com/yui/compressor/
+				3>谷歌的Closure Compiler  地址 https://developers.google.com/closure/compiler/
+
+
+DOM Core 和 HTML-DOM
+	至此，我们在编写JavaScript代码时只用到了一下几个DOM方法：
+	getElementById();
+	getElementsByTagName();
+	getAttribute();
+	setAttribute();
+	这些方法都是DOM Core的组成部分，它们并不专属于JavaScript，支持DOM的任何一种程序设计语言都可以使用它们。它们的用途也并非仅限于处理网页。
+	在使用JS语言和DOM为HTML编写脚本的时候，还有很多属性可供选择，例如我们使用onclick，这是属于HTML-DOM。例如HTML-DOM提供了一个forms对象：document.getElementsByTagName("form")，可以简化为：document.forms。类似的还有element.getAttribute("src")简化为element.src，还有href属性等。所以你要能够看懂别人的HTML，明白这两种写法。
+
+
+动态创建DOM节点
+	上面我们讲了通过一系列的方法可以找到DOM的节点、改变节点的属性(element.setAttribute)。那么如何创建节点呢？
+	1、使用传统方法：
+		(1)document.write() 该方法必须放在body标签里面，且必须是script标签里。如：
+		<body id="content">
+			<script type="text/javascript">
+				document.write("<p>document write something</p>");
+			<//script>
+		<//body>
+		document.write的最大缺点是它违背了“行为应该和表现分离”的原则。所以尽量避免使用。
+
+		(2)innerHTML属性
+		现如今的浏览器几乎都支持该属性，但这个属性并不是W3C DOM标准的组成部分，但现在已经在HTML5的规范中。最早见于IE4浏览器中，
+		该属性可以用来读、写某个给定元素的HTML内容。比如你可以把某个标签里的所有HTML代码全部替换成某个文本。但是这样就没有细节可言了，如果想要精准的控制还是必须使用DOM的方法和属性。
+
+	2、使用DOM方法
+		createElement、appendChild、createTextNode方法。
+		比如我们想在一个id为container的div节点添加一个p节点，p节点里有个文本“this dynamic node”。怎么实现？
+		首先我们要创建一个element，可以通过document.createElement(nodeName);所以创建p节点很简单：
+		var p = document.createElement("p");
+		并且需要在p节点里添加一个文本，这就要用到创建文本节点方法createTextNode.
+		vat txt = document.createTextNode("this dynamic node");
+		此时txt节点还是个孤零零的节点，和p节点没有任何关系，需要通过appendChild为p节点添加txt节点。
+		p.appendChild(txt);
+		同样的，p节点也是孤零零的存在，和div节点没有任何关系，所以也需要appendChild(); 
+		var container = document.getElementById("container");
+		container.appendChild(p);
+
+
+
 	
 
 
@@ -173,6 +272,14 @@ DOM提供的五个方法：
 
 
 */
+
+function createDynamicNode(){
+	var container = document.getElementById("container");
+	var p = document.createElement("p");
+	var txt = document.createTextNode("this dynamic node");
+	p.appendChild(txt);
+	container.appendChild(p);
+}
 
 function getElementBySameId(){
 	var pElements = document.getElementById("p1");
@@ -266,6 +373,9 @@ h2.special{
 
 </head>
 <body id="content">
+<script type="text/javascript">
+	document.write("<p>document write something</p>");
+</script>
 
 <p id="p1">this is content</p>
 
@@ -321,6 +431,17 @@ h2.special{
 <br/>
 
 <a href="#" onclick="openWindow();return false">openWindow</a>
+
+
+<br/>
+
+<a href="http://www.okxxoo.com" class="popup">openWindow by class</a>
+
+<br/>
+
+<div id="container"></div>
+
+<button onclick="createDynamicNode()">createDynamicNode</button> 
 
 
 </body>

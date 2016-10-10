@@ -1,22 +1,3 @@
-window.onload = preLinks;
-function preLinks(){
-	var as = document.getElementsByTagName("a");
-	for(var i = 0; i < as.length; i++){
-		if(as[i].getAttribute("class") == "popup"){
-			as[i].onclick = function(){
-				openwindow2(this.getAttribute("href"));
-				return false;
-			}
-		}
-	}
-}
-
-
-function openwindow2(url){
-	window.open(url,"openwindow","width=600,height=600");
-}
-
-
 
 /*
 Note:
@@ -262,17 +243,86 @@ DOM Core 和 HTML-DOM
 		该属性可以用来读、写某个给定元素的HTML内容。比如你可以把某个标签里的所有HTML代码全部替换成某个文本。但是这样就没有细节可言了，如果想要精准的控制还是必须使用DOM的方法和属性。
 
 	2、使用DOM方法
-		createElement、appendChild、createTextNode方法。
-		比如我们想在一个id为container的div节点添加一个p节点，p节点里有个文本“this dynamic node”。怎么实现？
-		首先我们要创建一个element，可以通过document.createElement(nodeName);所以创建p节点很简单：
-		var p = document.createElement("p");
-		并且需要在p节点里添加一个文本，这就要用到创建文本节点方法createTextNode.
-		vat txt = document.createTextNode("this dynamic node");
-		此时txt节点还是个孤零零的节点，和p节点没有任何关系，需要通过appendChild为p节点添加txt节点。
-		p.appendChild(txt);
-		同样的，p节点也是孤零零的存在，和div节点没有任何关系，所以也需要appendChild(); 
-		var container = document.getElementById("container");
-		container.appendChild(p);
+		案例一：比如我们想在一个id为container的div节点添加一个p节点，p节点里有个文本“this dynamic node”。怎么实现？
+			需要用到的DOM方法：createElement、appendChild、createTextNode方法。
+			首先我们要创建一个element，可以通过document.createElement(nodeName);所以创建p节点很简单：
+			var p = document.createElement("p");
+			并且需要在p节点里添加一个文本，这就要用到创建文本节点方法createTextNode.
+			vat txt = document.createTextNode("this dynamic node");
+			此时txt节点还是个孤零零的节点，和p节点没有任何关系，需要通过appendChild为p节点添加txt节点。
+			p.appendChild(txt);
+			同样的，p节点也是孤零零的存在，和div节点没有任何关系，所以也需要appendChild(); 
+			var container = document.getElementById("container");
+			container.appendChild(p);
+
+		案例二：在已有元素前插入一个新元素
+			DOM提供了名为insertBefore(newElement,targetElement)方法。该方法将把一个新元素插入到一个现有元素的前面。调用该方法需要知道三件事：
+			(1)新元素：你想插入的元素(newElement)
+			(2)目标元素：你想把这个新元素插入到哪个元素(targetElement)之前。
+			(3)父元素：目标元素的父元素(parentElement)。可以通过node.parentNode属性获得parentElement
+			parentElement.inertBefore(newElement,targetElement)
+			具体的例子可以参考下面的testInsertBefore方法，往input之前加入label
+
+		案例三：在已有元素前插入一个新元素
+			很遗憾，DOM并没有提供这个方法。所以需要我们自己实现。
+			结合insertBefore方法和element.nextSibling属性可以实现。
+			具体的例子可以参考下面的insertAfter方法。
+
+
+CSS DOM
+	我们在浏览器里看到的网页是由一下三层信息构成的共同体：
+	结构体 (HTML)
+	表示层 (CSS)
+	行为层 (Javascript、DOM)
+
+	style属性
+		文档中的每个元素都是一个对象，每个对象又有着各种各样的属性。有些属性告诉我们元素节点树上的位置节点，比如，parentNode、nextSibling、previousSibling、childNodes、firstChild和lastChild这些属性，告诉我们文档中各节点之间关系。
+		除此之外，文档的每个元素都有一个style属性，style属性包含着元素的样式，比如给p节点加上一个样式：
+			<p id="localStyle" style="color:grey;font-family: 'Arial',sans-serif;"> this is local style</p>
+		如果想要获取p节点的样式里的颜色怎么办？
+		查询style属性将返回一个对象，而不是一个简单的字符串。样式都存放在这个style对象的属性里：
+			element.style.propertyName
+		所以获取里面的颜色很简单：
+			p.style.color;
+		需要注意的是在p标签里我们设置样式里的颜色是grey，如果我设置的是十六进制的值“#999999”，p.style.color返回的值是RGB格式rgb(153,153,153)
+		但是获取font-family，要使用驼峰的方式，CSS是使用“-”来分隔两个单词的，我们通过DOM来获取有“-”的style属性必须使用去掉“-”然后第二个单词首字母大写。如CSS属性background-color对应的DOM属性为backgroundColor；CSS属性font-weight对应这DOM属性fontWeight；CSS属性margin-top-width对应着DOM属性marginTopWidth。
+		获取font-family：
+			p.style.fontFamily
+		DOM可以获取style属性，同样可以修改样式：
+			p.style.color = "black";
+		以上我们是通过DOM来操作内嵌样式，但是这样的内嵌样式有很大的局限性。只有把CSS style属性插入到标记里(标签)，才可以用DOM style属性去查询那些信息：
+			<p id="localStyle" style="color:grey;font-family: 'Arial',sans-serif;"> this is local style</p>
+		这样不是使用CSS的好办法(表现信息与结构混杂在一起了)。更好的办法是用一个外部样式去设置样式：
+			p#localStyle{
+				color: grey;
+				font-family: 'Arial',sans-serif;
+			}
+		把这段CSS代码放到一个单独的文件，然后在HTML引入即可：
+			<link href="my.css" rel="stylesheet" type="text/css" />
+		但是这样就无法通过DOM获取style里的属性了，因为p标签没有style属性节点了。
+
+	className属性
+		在前面的例子，我们通过DOM直接设置或修改样式，这种做法让“行为层”干“表示层”的活，并不是理想的工作方式。
+		这里有一种简明的解决方案：与其使用DOM直接修改某个元素的样式，不同通过JavaScript代码去更新这个元素的class属性。
+		比如我们已经有了下面的样式：
+		.special{
+			font-style: italic;
+		}
+		我们只需要给某个节点设置class属性为special即可。设置节点的className属性可以两种方式：
+		element.setAttribute("class","special");
+		element.className = "special";
+		如果想要设置多个className，请空格隔开：
+		element.className = "special special2";
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -285,6 +335,56 @@ DOM Core 和 HTML-DOM
 
 
 */
+window.onload = preLinks;
+function preLinks(){
+	var as = document.getElementsByTagName("a");
+	for(var i = 0; i < as.length; i++){
+		if(as[i].getAttribute("class") == "popup"){
+			as[i].onclick = function(){
+				openwindow2(this.getAttribute("href"));
+				return false;
+			}
+		}
+	}
+}
+
+
+function openwindow2(url){
+	window.open(url,"openwindow","width=600,height=600");
+}
+
+function setClassName(){
+	var p = document.getElementById("localStyle");
+	p.className = "special special2";
+}
+
+function getStyleColor(){
+	var p = document.getElementById("localStyle");
+	alert((typeof p.nodeName)+"-"+(typeof p.style));//string-object
+	alert("颜色："+p.style.color);
+	alert(p.style.fontFamily);
+	//改变颜色
+	p.style.color="black";
+}
+
+
+function testInsertBefore(){
+	var div = document.getElementById("username");
+	var label = document.createTextNode("请输入用户名：");
+	div.parentNode.insertBefore(label,div);
+}
+
+function insertAfter(){
+
+	var name = document.getElementById("username");
+	var password = document.createElement("input");
+	password.placeholder = "密码";
+	var div = document.createElement("div");
+	div.appendChild(password);
+	name.parentNode.insertBefore(div,name.nextSibling);
+
+
+}
 
 function createDynamicNode(){
 	var container = document.getElementById("container");

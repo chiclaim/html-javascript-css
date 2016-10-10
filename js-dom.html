@@ -2,43 +2,18 @@
 
 <head>
 
-<script type="text/javascript" src="myjs.js" />
+<script type="text/javascript" src="myjs.js" ></script>
 
+<link href="mycss.css" rel="stylesheet" type="text/css" />
 
-
-<style type="text/css">
-
-body{
-	color: red;
-	background-color: white;
-}
-
-.special{
-	font-style: italic;
-}
-
-h2.special{
-	font-size: 20px;
-	/*font-style: normal;*/
-}
-
-#purchases{
-	border: 1px solid red;
-	background-color:  #333;
-	color: white;
-	padding: 2em;
-}
-
-#purchases li{
-	font-weight: bold;
-}
-</style>
 
 </head>
 <body id="content">
 <script type="text/javascript">
 	document.write("<p>document write something</p>");
 </script>
+
+<p id="localStyle" style="color:grey;font-family: 'Arial',sans-serif;"> this is local style</p>
 
 <p id="p1">this is content</p>
 
@@ -102,9 +77,29 @@ h2.special{
 
 <br/>
 
-<div id="container"></div>
+<div id="container">
+
+	<input type="text" id="username" placeholder="用户名"></input>
+
+</div>
 
 <button onclick="createDynamicNode()">createDynamicNode</button> 
+
+<br/>
+
+<button onclick="testInsertBefore()">insertBefore</button> 
+
+<br/>
+
+<button onclick="insertAfter()">insertAfter</button> 
+
+<br/>
+
+<button onclick="getStyleColor()">getStyleColor</button> 
+
+<br/>
+
+<button onclick="setClassName()">setClassName</button> 
 
 
 </body>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-
+    <base target="_blank"/>
     <title>this is a html</title>
 
 </head>
@@ -33,14 +33,211 @@
 
 
 <p>
-    <a href="http://blog.csdn.net/johnny901114" title="Chiclaim的博客" target="_blank">我的博客</a>
+    <a href="http://blog.csdn.net/johnny901114" title="Chiclaim的博客">我的博客</a>
 
 </p>
 
+<h4>选择居住城市(CN)</h4>
+<ul>
+    <li>北京</li>
+    <li>上海</li>
+    <li>广州</li>
+    <li>铁岭</li>
+</ul>
 
-<img src="girl.png" height="300px" alt="不好意思，加载图片出错了"/>
-<img src="imgs/girl.png" height="300px" alt="不好意思，加载图片出错了"/>
-<img src="../girl.png" height="300px" alt="不好意思，加载图片出错了"/>
+<h4>购物清单</h4>
+<ul>
+    <li>
+        好吃的
+        <ul>
+            <li>牛奶</li>
+            <li>面包</li>
+        </ul>
+    </li>
+    <li>
+        日用的
+        <ul>
+            <li>毛巾</li>
+            <li>牙膏</li>
+        </ul>
+    </li>
+</ul>
 
+<h4>中国房价排行</h4>
+<ol>
+    <li>北京</li>
+    <li>上海</li>
+    <li>广州</li>
+    <li>铁岭</li>
+</ol>
+
+
+<dl>
+    <dt>北京</dt>
+    <dd>国家的首都, 看升国旗的地方</dd>
+    <dt>上海</dt>
+    <dd>魔都, 遍地是黄金的地方</dd>
+</dl>
+
+
+<table border="1px" align="center" width="800px">
+    <caption>
+        <h4>下面是表格</h4>
+    </caption>
+    <tr>
+        <td>第一列</td>
+        <td>第二列</td>
+        <td>第三列</td>
+        <td>第四列</td>
+    </tr>
+
+    <tr>
+        <td>第一列</td>
+        <td>第二列</td>
+        <td>第三列</td>
+        <td>第四列</td>
+    </tr>
+
+</table>
+
+<table bgcolor="black" cellspacing="1px" width="800px" align="center">
+    <caption>
+        <h2>今日小说排行榜</h2>
+    </caption>
+    <tr bgcolor="#a9a9a9">
+        <th>排名</th>
+        <th>关键词</th>
+        <th>趋势</th>
+        <th>今日搜索</th>
+        <th>最近七日</th>
+        <th>相关链接</th>
+    </tr>
+    <tr bgcolor="white" align="center">
+        <td>1</td>
+        <td align="left">暴走大事件</td>
+        <td>
+            <img src="imgs/up.jpg">
+        </td>
+        <td>623557</td>
+        <td>4088311</td>
+        <td>
+            <a href="#">贴吧</a>
+            <a href="#">图片</a>
+            <a href="#">百科</a>
+        </td>
+    </tr>
+    <tr bgcolor="white" align="center">
+        <td>1</td>
+        <td align="left">暴走大事件</td>
+        <td>
+            <img src="imgs/up.jpg">
+        </td>
+        <td>623557</td>
+        <td>4088311</td>
+        <td>
+            <a href="#">贴吧</a>
+            <a href="#">图片</a>
+            <a href="#">百科</a>
+        </td>
+    </tr>
+    <tr bgcolor="white" align="center">
+        <td>1</td>
+        <td align="left">暴走大事件</td>
+        <td>
+            <img src="imgs/up.jpg">
+        </td>
+        <td>623557</td>
+        <td>4088311</td>
+        <td>
+            <a href="#">贴吧</a>
+            <a href="#">图片</a>
+            <a href="#">百科</a>
+        </td>
+    </tr>
+</table>
+
+
+<table>
+    <caption>表格的标题</caption>
+    <thead>
+    <tr>
+        <th>每一列的标题</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>数据</td>
+    </tr>
+    </tbody>
+
+    <tfoot>
+    <tr>
+        <td>数据</td>
+    </tr>
+    </tfoot>
+</table>
+
+
+<h4>Form表单</h4>
+
+<form>
+    <label for="username">用户名:</label>
+    <input type="text" id="username" name="username">
+    <br/>
+
+    <label for="pwd">密码:</label>
+    <input type="password" value="123456" name="pwd" id="pwd"/>
+
+    <br/>
+    真实姓名<input type="text" name="realname">
+
+    喜欢多颜色
+    <input type="color" name="favorite_color">
+
+    <br/>
+    <input type="text" list="cars">
+    <datalist id="cars">
+        <option>奔驰</option>
+        <option>宝马</option>
+        <option>奥迪</option>
+        <option>路虎</option>
+        <option>宾利</option>
+    </datalist>
+    <br/>
+
+    <input type="date" name="birthday">
+
+    <br/>
+    <input type="button" value="点我丫"/>
+    <input type="reset"/>
+
+
+</form>
+
+<p>
+    <input type="radio" name="xingbie"/> 男
+    <input type="radio" name="xingbie"/> 女
+    <input type="radio" name="xingbie" checked="checked"/> 妖
+</p>
+
+<p>
+    <input type="radio" name="apple"/> 苹果
+    <input type="radio" name="banana" checked="checked"/> 香蕉
+    <input type="radio" name="orange"/> 橘子
+</p>
+
+
+<p>
+    <input type="checkbox" name="aihao" checked="checked"/> 篮球
+    <input type="checkbox" name="aihao"/> 足球
+    <input type="checkbox" name="aihao"/> 棒球
+</p>
+
+
+<p>
+    <img src="girl.png" height="300px" alt="不好意思，加载图片出错了"/>
+    <img src="imgs/girl.png" height="300px" alt="不好意思，加载图片出错了"/>
+    <img src="../girl.png" height="300px" alt="不好意思，加载图片出错了"/>
+</p>
 
 </body>

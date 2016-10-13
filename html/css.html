@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS</title>
+
+
+    <style type="text/css">
+        h1 {
+            text-align: left;
+            color: red;
+            font-family: "微软雅黑";
+        }
+
+        div {
+            text-align: left;
+            color: blue;
+            font-size: 20px;
+        }
+
+        div ul li p {
+            text-align: left;
+            color: red;
+        }
+
+        div > ol > li > p {
+            color: purple;
+        }
+
+        .para1#identity2 {
+            color: green;
+        }
+
+        .ht, .para {
+            color: pink;
+        }
+
+        h2 + p {
+            color: brown;
+        }
+
+        h6 ~ p {
+            color: fuchsia;
+        }
+
+        /*
+                p:first-child{
+                    color: darkorange;
+                }
+                p:last-child{
+                    color: red;
+                }
+
+                p:nth-child(2){
+                    color: red;
+                }
+              */
+        p:nth-of-type(3) {
+            color: chartreuse;
+        }
+
+        p[id] {
+            color: black;
+        }
+
+        /*
+                img[alt^=abc]{
+                    color: lawngreen;
+                }
+
+                img[alt|=abc] {
+                    color: lawngreen;
+                }
+
+                img[alt$=abc]{
+                    color: blue;
+                }
+                img[alt~=abc]{
+                    color: red;
+                }
+        */
+
+
+        img[alt*=abc]{
+            color: red;
+        }
+    </style>
+
+</head>
+<body>
+<h4>用HTML完成</h4>
+<h1 align="center">
+    <font face="微软雅黑" color="red">成功法则</font>
+</h1>
+<div align="center">
+    <font face="微软雅黑" color="blue" size="5">迟到毁一生</font>
+</div>
+<div align="center">
+    <font face="微软雅黑" color="blue" size="5">早退穷三代</font>
+</div>
+<div align="center">
+    <font face="微软雅黑" color="blue" size="5">按时上下班</font>
+</div>
+<div align="center">
+    <font face="微软雅黑" color="blue" size="5">必成高富帅</font>
+</div>
+
+<hr>
+
+<h4>用CSS完成</h4>
+<h1>成功法则</h1>
+<div>迟到毁一生</div>
+<div>早退穷三代</div>
+<div>按时上下班</div>
+<div>必成高富帅</div>
+
+
+<hr>
+<h3>后代选择器</h3>
+<div>
+    我也是段落start
+    <p>我是段落p1</p>
+    <p>我是段落p2</p>
+    <ul>
+        <li>
+            <!--<p id="iii" class="ccc">我是段落</p>-->
+            <p>我是段落li1</p>
+        </li>
+        <li>
+            <p>我是段落li2</p>
+        </li>
+    </ul>
+    我也是段落end
+</div>
+
+
+<hr>
+
+<h3>子元素选择器</h3>
+
+<div id="identity">
+    <p>我是段落</p>
+    <p>我是段落</p>
+    <ol>
+        <li><p>我是段落p</p></li>
+    </ol>
+</div>
+
+<hr>
+
+<h3>交集选择器</h3>
+<p class="para1" id="identity2">我是段落1</p>
+<p class="para1">我是段落2</p>
+
+
+<hr>
+
+<h3>并集选择器</h3>
+<h4 class="ht">我是标题</h4>
+<p class="para">我是段落</p>
+
+
+<hr>
+
+<h3>兄弟选择器</h3>
+<h2>我是标题</h2>
+<p>我是段落</p>
+<a href="#">我是超链接</a>
+<p>我是段落</p>
+
+
+<hr>
+<h3>通用兄弟选择器</h3>
+<h6>我是标题</h6>
+<a href="#">我是超链接</a>
+<p>我是段落</p>
+<p>我是段落</p>
+<a href="#">我是超链接</a>
+<p>我是段落</p>
+
+<h6>我是标题</h6>
+<p>我是段落</p>
+<p>我是段落</p>
+<p>我是段落</p>
+
+
+<hr>
+<h3>序选择器</h3>
+<div>
+    <p>我是段落1</p>
+    <p>我是段落2</p>
+    <p>我是段落3</p>
+    <p>我是段落4</p>
+
+    <br/>
+    <div>
+        <p>我是里面段落1</p>
+        <p>我是里面段落2</p>
+        <p>我是里面段落3</p>
+        <p>我是里面段落4</p>
+    </div>
+</div>
+
+<hr>
+<h3>属性选择器</h3>
+<p id="identity4">我是段落1</p>
+<p id="identity5" class="cc">我是段落2</p>
+<p>我是里面段落3</p>
+<p>我是里面段落4</p>
+
+<hr>
+<h3>属性选择器2</h3>
+<img src="" alt="abcdef">
+<br/>
+<img src="" alt="abc-www">
+<br/>
+<img src="" alt="defabc">
+<br/>
+<img src="" alt="ppp abc">
+<br/>
+<img src="" alt="wwwabcmmm"><br/>
+<img src="" alt="www-abc-mmm"><br/>
+<img src="" alt="www abc mmm"><br/>
+
+</body>
+</html>
